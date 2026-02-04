@@ -1,64 +1,115 @@
 import Image from "next/image";
+import { Search } from "lucide-react";
 
-export default function Home() {
+import TrendingSection from "@/components/home/TrendingSection";
+import BestSection from "@/components/home/BestSection";
+import MasonrySection from "@/components/home/MasonrySection";
+import BestCafeCard from "@/components/cards/CafeCard";
+
+import { cafeDummies } from "@/data/Cafes";
+
+export default function HomePage() {
+  const cafes = cafeDummies;
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <div className="flex flex-col min-h-screen items-center justify-center font-sans bg-[var(--color-background)]">
+      <main className="flex flex-col min-h-screen w-full gap-[80px] px-12 pt-2 pb-30">
+        <div id="hero-banner" className="relative w-full h-[400px]">
+          <div className="relative h-full rounded-2xl overflow-hidden">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src="/images/hero-banner.jpg"
+              alt="Hero Kafe Jogja"
+              fill
+              className="object-cover"
+              priority
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div className="absolute inset-0 bg-black/55" />
+            <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-6">
+              <h1 className="text-balance text-white text-3xl font-semibold">
+                Temukan Kafe yang Tepat untuk Setiap Momen
+              </h1>
+              <p className="mt-3 max-w-2xl text-pretty text-sm text-white/80 sm:text-base">
+                Jelajahi kafe di Jogja sesuai kebutuhan dan ceritamu hari ini.
+              </p>
+            </div>
+          </div>
+          {/* Search bar */}
+          <div className="absolute left-1/2 top-full w-full max-w-4xl -translate-x-1/2 -translate-y-1/2">
+            <div className="flex items-stretch overflow-hidden rounded-full bg-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.35)] ring-1 ring-white/15 backdrop-blur">
+              <div className="flex flex-1 flex-col justify-center px-5 py-3">
+                <span className="text-[11px] font-semibold text-white/70">
+                  Lokasi
+                </span>
+                <input
+                  className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/45 focus:outline-none"
+                  placeholder="Cari nama atau daerah..."
+                />
+              </div>
+              <div className="my-3 w-px bg-white/12" />
+              <div className="flex flex-1 flex-col justify-center px-5 py-3">
+                <span className="text-[11px] font-semibold text-white/70">
+                  Jam Operasional
+                </span>
+                <input
+                  className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/45 focus:outline-none"
+                  placeholder="Tambah jam operasional..."
+                />
+              </div>
+              <div className="my-3 w-px bg-white/12" />
+              <div className="flex flex-1 flex-col justify-center px-5 py-3">
+                <span className="text-[11px] font-semibold text-white/70">
+                  Kategori
+                </span>
+                <input
+                  className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/45 focus:outline-none"
+                  placeholder="Hangout, kerja, lainnya..."
+                />
+              </div>
+              <button
+                className="self-center m-2 cursor-pointer rounded-full flex w-[52px] aspect-square items-center justify-center bg-[var(--color-primary)]"
+                aria-label="Cari"
+                type="button"
+              >
+                <Search
+                  size={18}
+                  className="opacity-95 transition duration 150 ease-in group-hover:scale-130"
+                />
+                {/* <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="opacity-95 transition group-hover:scale-110"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
+                    stroke="rgba(0,0,0,0.75)"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M16.5 16.5 21 21"
+                    stroke="rgba(0,0,0,0.75)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg> */}
+              </button>
+            </div>
+          </div>
         </div>
+        <TrendingSection />
+        <BestSection />
+        <MasonrySection>
+          {cafes.map((cafe) => (
+            <div key={cafe.id} className="break-inside-avoid mb-6">
+              <BestCafeCard
+                title={cafe.name}
+                content={cafe.area}
+                imageUrl={cafe.image}
+              />
+            </div>
+          ))}
+        </MasonrySection>
       </main>
     </div>
   );
