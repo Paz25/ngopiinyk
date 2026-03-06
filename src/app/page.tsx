@@ -4,12 +4,8 @@ import SearchBar from "@/components/SearchBar";
 import TrendingSection from "@/components/home/TrendingSection";
 import BestSection from "@/components/home/BestSection";
 import MasonrySection from "@/components/home/MasonrySection";
-import BestCafeCard from "@/components/cards/CafeCard";
-
-import { cafeDummies } from "@/data/Cafes";
 
 export default function HomePage() {
-  const cafes = cafeDummies;
   return (
     <main className="flex flex-col min-h-screen w-full gap-[80px] px-12 pt-2 pb-30 bg-[var(--color-background)]">
       <div id="hero-banner" className="relative w-full h-[400px]">
@@ -35,17 +31,7 @@ export default function HomePage() {
       </div>
       <TrendingSection />
       <BestSection />
-      <MasonrySection>
-        {cafes.map((cafe) => (
-          <div key={cafe.id} className="break-inside-avoid mb-6">
-            <BestCafeCard
-              title={cafe.name}
-              content={cafe.area}
-              imageUrl={cafe.image}
-            />
-          </div>
-        ))}
-      </MasonrySection>
+      <MasonrySection />
     </main>
   );
 }

@@ -1,25 +1,33 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { CafeCardModel } from "@/models/CafeModel";
+import { encodeId } from "@/lib/hashid";
+
 type CafeCardProps = {
+  cafe: CafeCardModel;
   className?: string;
-  title?: string;
-  content?: string;
-  bestCategory?: string;
-  imageUrl?: string;
   variant?: "masonry" | "best";
+  bestCategory?: string;
   imageHeight?: number;
 };
 
 export default function CafeCard({
+  cafe,
   className = "",
-  title = "",
-  content = "",
-  bestCategory = "",
-  imageUrl = "",
   variant = "masonry",
+  bestCategory,
   imageHeight = 200,
 }: CafeCardProps) {
+  const router = useRouter();
+  if (!cafe) return null;
   const isBest = variant === "best";
+
   return (
-    <div className={`flex flex-col gap-[10px] ${className}`}>
+    <div
+      className={`flex flex-col gap-[10px] transition duration-300 hover:scale-[1.04] cursor-pointer ${className}`}
+      onClick={() => router.push(`/cafes/${encodeId(cafe.id)}`)}
+    >
       <div
         className={[
           "relative w-full overflow-hidden rounded-2xl bg-white",
@@ -27,19 +35,24 @@ export default function CafeCard({
         ].join(" ")}
         style={isBest ? { height: imageHeight } : undefined}
       >
+        {cafe.rating != null && (
+          <div className="absolute top-2 right-2 z-10 bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded-full">
+            ⭐ {cafe.rating}
+          </div>
+        )}
         {bestCategory && (
-          <div className="absolute top-3 left-3 z-10 rounded-full bg-[var(--color-primary)] px-[10px] py-[5px] text-xs font-semibold text-white">
-            Terbaik untuk {bestCategory}
+          <div className="absolute bottom-2 left-2 bg-primary text-xs font-semibold px-2 py-1 rounded-full text-[var(--color-background)] w-fit">
+            Terpopuler untuk {bestCategory}
           </div>
         )}
 
-        {imageUrl ? (
+        {cafe.image ? (
           <img
-            src={imageUrl}
-            alt={title}
+            src={cafe.image}
+            alt={cafe.name}
             loading="lazy"
             className={[
-              "block w-full",
+              "block w-full min-h-[200px] object-cover",
               isBest ? "h-full object-cover" : "h-auto object-cover",
             ].join(" ")}
           />
@@ -53,16 +66,13 @@ export default function CafeCard({
           />
         )}
       </div>
-      {title && (
-        <div className="flex flex-col px-[4px] gap-[4px]">
-          <h3 className="text-sm font-semibold">{title}</h3>
-          {content && (
-            <p className="text-xs font-normal leading-tight text-white/70">
-              {content}
-            </p>
-          )}
-        </div>
-      )}
+
+      <div className="flex flex-col px-2 gap-1">
+        <h3 className="text-sm font-semibold">{cafe.name}</h3>
+        <p className="text-xs font-normal leading-tight text-white/70">
+          {cafe.area}
+        </p>
+      </div>
     </div>
   );
 }
