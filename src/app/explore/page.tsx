@@ -98,10 +98,10 @@ function CategoryCard(props: {
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:bg-black/50 transition-all duration-300" />
 
-      <div className="absolute bottom-0 left-0 p-5">
+      <div className="absolute bottom-0 left-0 p-5 flex flex-col gap-1">
         <div className="text-lg font-semibold text-white">{category.name}</div>
-        <div className="mt-1 text-xs text-white/80 max-h-0 overflow-hidden opacity-0 translate-y-2 group-hover:max-h-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
-          Klik untuk lihat lebih banyak
+        <div className="text-xs text-white/80 max-h-0 overflow-hidden opacity-0 translate-y-2 group-hover:max-h-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
+          Klik untuk lihat lebih detail
         </div>
       </div>
     </div>

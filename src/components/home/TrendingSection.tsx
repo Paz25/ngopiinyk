@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import SkeletonCard from "../cards/SkeletonCard";
 
 type TrendingCafe = {
   id: number;
@@ -52,10 +53,7 @@ export default function TrendingSection() {
       <div className="grid grid-cols-12 gap-3 md:gap-4">
         {loading
           ? colSpanClass.map((cls, i) => (
-              <div
-                key={i}
-                className={`${cls} bg-white/40 rounded-2xl animate-pulse min-h-[150px]`}
-              />
+              <SkeletonCard key={i} className={cls} />
             ))
           : cafes.map((cafe, i) => (
               <TrendingCard
@@ -80,8 +78,8 @@ function TrendingCard({
     <div
       className={[
         "relative overflow-hidden cursor-pointer group",
-        "rounded-2xl min-h-[150px] sm:h-[100px] h-[200px] lg:h-auto transition",
-        "hover:scale-[1.02]",
+        "rounded-2xl min-h-[200px]",
+        "transition duration-300 hover:scale-[1.02]",
         className,
       ].join(" ")}
     >
@@ -97,7 +95,7 @@ function TrendingCard({
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:bg-black/40 transition-all duration-300" />
 
-      <div className="absolute bottom-0 left-0 p-4">
+      <div className="absolute bottom-0 left-0 p-4 flex flex-col gap-1">
         <div className="text-base font-semibold text-white">{cafe.name}</div>
         <div className="text-xs text-white/70">{cafe.area}</div>
       </div>
