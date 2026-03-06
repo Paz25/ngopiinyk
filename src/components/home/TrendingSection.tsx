@@ -1,14 +1,105 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+type TrendingCafe = {
+  id: number;
+  name: string;
+  area: string;
+  rating: number | null;
+  view_count: number;
+  image: string | null;
+};
+
 export default function TrendingSection() {
+  const [cafes, setCafes] = useState<TrendingCafe[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchTrending() {
+      try {
+        const res = await fetch("/api/cafes/trending");
+        const json = await res.json();
+        if (!cancelled) {
+          setCafes(json?.status === "OK" ? json.data : []);
+        }
+      } catch (e) {
+        console.error("Fetch trending error:", e);
+        if (!cancelled) setCafes([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    fetchTrending();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const colSpanClass = [
+    "col-span-6 md:col-span-4 lg:col-span-3 md:row-span-2",
+    "col-span-6 md:col-span-4 lg:col-span-3",
+    "col-span-6 md:col-span-4 lg:col-span-3 md:row-span-2",
+    "col-span-6 md:col-span-4 lg:col-span-3",
+    "col-span-6 md:col-span-6 lg:col-span-3",
+    "col-span-6 md:col-span-6 lg:col-span-3",
+  ];
+
   return (
     <div className="flex flex-col">
       <h2 className="text-xl font-semibold mb-5">Yang Lagi Ngetren</h2>
       <div className="grid grid-cols-12 gap-3 md:gap-4">
-        <div className="col-span-6 md:col-span-4 lg:col-span-3 md:row-span-2 bg-white rounded-2xl"></div>
-        <div className="col-span-6 md:col-span-4 lg:col-span-3 bg-white sm:h-[100px] h-[200px] lg:h-[150px] rounded-2xl"></div>
-        <div className="col-span-6 md:col-span-4 lg:col-span-3 md:row-span-2 bg-white rounded-2xl"></div>
-        <div className="col-span-6 md:col-span-4 lg:col-span-3 bg-white sm:h-[100px] h-[200px] lg:h-[150px] rounded-2xl"></div>
-        <div className="col-span-6 md:col-span-6 lg:col-span-3 bg-white sm:h-[100px] h-[200px] lg:h-[150px] rounded-2xl"></div>
-        <div className="col-span-6 md:col-span-6 lg:col-span-3 bg-white sm:h-[100px] h-[200px] lg:h-[150px] rounded-2xl"></div>
+        {loading
+          ? colSpanClass.map((cls, i) => (
+              <div
+                key={i}
+                className={`${cls} bg-white/40 rounded-2xl animate-pulse min-h-[150px]`}
+              />
+            ))
+          : cafes.map((cafe, i) => (
+              <TrendingCard
+                key={cafe.id}
+                cafe={cafe}
+                className={colSpanClass[i] ?? "col-span-6"}
+              />
+            ))}
+      </div>
+    </div>
+  );
+}
+
+function TrendingCard({
+  cafe,
+  className,
+}: {
+  cafe: TrendingCafe;
+  className: string;
+}) {
+  return (
+    <div
+      className={[
+        "relative overflow-hidden cursor-pointer group",
+        "rounded-2xl min-h-[150px] sm:h-[100px] h-[200px] lg:h-auto transition",
+        "hover:scale-[1.02]",
+        className,
+      ].join(" ")}
+    >
+      {cafe.image ? (
+        <img
+          src={cafe.image}
+          alt={cafe.name}
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gray-200" />
+      )}
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:bg-black/40 transition-all duration-300" />
+
+      <div className="absolute bottom-0 left-0 p-4">
+        <div className="text-base font-semibold text-white">{cafe.name}</div>
+        <div className="text-xs text-white/70">{cafe.area}</div>
       </div>
     </div>
   );

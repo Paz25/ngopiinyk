@@ -1,23 +1,21 @@
+import { CafeCardModel } from "@/models/CafeModel";
+
 type CafeCardProps = {
+  cafe: CafeCardModel;
   className?: string;
-  title?: string;
-  content?: string;
-  bestCategory?: string;
-  imageUrl?: string;
   variant?: "masonry" | "best";
   imageHeight?: number;
 };
 
 export default function CafeCard({
+  cafe,
   className = "",
-  title = "",
-  content = "",
-  bestCategory = "",
-  imageUrl = "",
   variant = "masonry",
   imageHeight = 200,
 }: CafeCardProps) {
+  if (!cafe) return null;
   const isBest = variant === "best";
+
   return (
     <div className={`flex flex-col gap-[10px] ${className}`}>
       <div
@@ -27,16 +25,16 @@ export default function CafeCard({
         ].join(" ")}
         style={isBest ? { height: imageHeight } : undefined}
       >
-        {bestCategory && (
-          <div className="absolute top-3 left-3 z-10 rounded-full bg-[var(--color-primary)] px-[10px] py-[5px] text-xs font-semibold text-white">
-            Terbaik untuk {bestCategory}
+        {cafe.rating != null && (
+          <div className="absolute top-3 right-3 z-10 bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded-full">
+            ⭐ {cafe.rating}
           </div>
         )}
 
-        {imageUrl ? (
+        {cafe.image ? (
           <img
-            src={imageUrl}
-            alt={title}
+            src={cafe.image}
+            alt={cafe.name}
             loading="lazy"
             className={[
               "block w-full",
@@ -53,16 +51,13 @@ export default function CafeCard({
           />
         )}
       </div>
-      {title && (
-        <div className="flex flex-col px-[4px] gap-[4px]">
-          <h3 className="text-sm font-semibold">{title}</h3>
-          {content && (
-            <p className="text-xs font-normal leading-tight text-white/70">
-              {content}
-            </p>
-          )}
-        </div>
-      )}
+
+      <div className="flex flex-col px-[4px] gap-[4px]">
+        <h3 className="text-sm font-semibold">{cafe.name}</h3>
+        <p className="text-xs font-normal leading-tight text-white/70">
+          {cafe.area}
+        </p>
+      </div>
     </div>
   );
 }
