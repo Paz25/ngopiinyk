@@ -67,7 +67,7 @@ export default function CafeCard({
         )}
       </div>
 
-      <div className="flex flex-col px-2 gap-1">
+      <div className="flex flex-col px-2 gap-1 md:gap-2">
         <h3 className="text-sm font-semibold">{cafe.name}</h3>
         <p className="text-xs font-normal leading-tight text-white/70">
           {cafe.area}

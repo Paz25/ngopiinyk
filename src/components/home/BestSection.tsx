@@ -46,22 +46,19 @@ export default function BestSection() {
   }, []);
 
   return (
-    <div className="flex flex-col">
-      <h2 className="text-xl font-semibold mb-5">Terbaik di Setiap Kategori</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {loading
-          ? Array.from({ length: 5 }).map((_, i) => (
-              <SkeletonCard key={i} className="h-[200px]" />
-            ))
-          : cafes.map((cafe) => (
-              <CafeCard
-                key={cafe.category.id}
-                cafe={cafe}
-                bestCategory={cafe.category.name}
-                variant="best"
-              />
-            ))}
-      </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      {loading
+        ? Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonCard key={i} className="h-[200px]" />
+          ))
+        : cafes.map((cafe) => (
+            <CafeCard
+              key={cafe.category.id}
+              cafe={cafe}
+              bestCategory={cafe.category.name}
+              variant="best"
+            />
+          ))}
     </div>
   );
 }

@@ -48,21 +48,16 @@ export default function TrendingSection() {
   ];
 
   return (
-    <div className="flex flex-col">
-      <h2 className="text-xl font-semibold mb-5">Yang Lagi Ngetren</h2>
-      <div className="grid grid-cols-12 gap-3 md:gap-4">
-        {loading
-          ? colSpanClass.map((cls, i) => (
-              <SkeletonCard key={i} className={cls} />
-            ))
-          : cafes.map((cafe, i) => (
-              <TrendingCard
-                key={cafe.id}
-                cafe={cafe}
-                className={colSpanClass[i] ?? "col-span-6"}
-              />
-            ))}
-      </div>
+    <div className="grid grid-cols-12 gap-3 md:gap-4">
+      {loading
+        ? colSpanClass.map((cls, i) => <SkeletonCard key={i} className={cls} />)
+        : cafes.map((cafe, i) => (
+            <TrendingCard
+              key={cafe.id}
+              cafe={cafe}
+              className={colSpanClass[i] ?? "col-span-6"}
+            />
+          ))}
     </div>
   );
 }
@@ -95,8 +90,10 @@ function TrendingCard({
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:bg-black/40 transition-all duration-300" />
 
-      <div className="absolute bottom-0 left-0 p-4 flex flex-col gap-1">
-        <div className="text-base font-semibold text-white">{cafe.name}</div>
+      <div className="absolute bottom-0 left-0 p-3 md:p-4 flex flex-col gap-1 md:gap-2">
+        <div className="text-sm md:text-base font-semibold text-white">
+          {cafe.name}
+        </div>
         <div className="text-xs text-white/70">{cafe.area}</div>
       </div>
     </div>
