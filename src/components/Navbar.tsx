@@ -81,7 +81,7 @@ export default function Navbar() {
       {/* Sidebar */}
       <div
         className={[
-          "fixed top-0 right-0 z-50 h-full w-72 bg-[var(--color-background)] shadow-xl",
+          "fixed top-0 right-0 z-50 h-full w-60 bg-[var(--color-background)] shadow-xl",
           "flex flex-col px-8 py-6 gap-8 md:hidden",
           "transition-transform duration-300 ease-in-out",
           sidebarOpen ? "translate-x-0" : "translate-x-full",

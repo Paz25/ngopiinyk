@@ -47,7 +47,9 @@ export default function Footer() {
         </div>
       </div>
       <div className="flex justify-center items-center">
-        <span className="text-xs">© 2026 Pasha Rakha</span>
+        <span className="text-[10px] md:text-xs">
+          © 2026 Pasha Rakha. All rights reserved.
+        </span>
       </div>
     </footer>
   );

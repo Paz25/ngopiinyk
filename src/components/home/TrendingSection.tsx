@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { encodeId } from "@/lib/hashid";
 import SkeletonCard from "../cards/SkeletonCard";
 
 type TrendingCafe = {
@@ -69,8 +71,10 @@ function TrendingCard({
   cafe: TrendingCafe;
   className: string;
 }) {
+  const router = useRouter();
   return (
     <div
+      onClick={() => router.push(`/cafes/${encodeId(cafe.id)}`)}
       className={[
         "relative overflow-hidden cursor-pointer group",
         "rounded-2xl min-h-[200px]",
