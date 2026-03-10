@@ -30,6 +30,8 @@ export type CafeModel = {
       is_closed: boolean;
     }
   >;
+  latitude: number;
+  longitude: number;
   categories: Pick<CategoryModel, "id" | "name">[];
   facilities: FacilityModel[];
   images: CafeImageModel[];

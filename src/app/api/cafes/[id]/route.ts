@@ -12,25 +12,27 @@ export async function GET(
 
     const cafe = await db.query(
       `SELECT
-     c.id,
-     c.name,
-     c.address,
-     c.gmaps_link,
-     c.rating,
-     c.review_count,
-     c.opening_hours,
-     c.description,
-     COALESCE(
-       JSON_AGG(
-         JSON_BUILD_OBJECT('id', f.id, 'name', f.name, 'icon', f.icon)
-       ) FILTER (WHERE f.id IS NOT NULL),
-       '[]'
-     ) AS facilities
-      FROM cafes c
-      LEFT JOIN bridge_facility_cafe bfc ON bfc.cafe_id = c.id
-      LEFT JOIN facilities f ON f.id = bfc.facility_id
-      WHERE c.id = $1
-      GROUP BY c.id`,
+        c.id,
+        c.name,
+        c.address,
+        c.gmaps_link,
+        c.rating,
+        c.review_count,
+        c.opening_hours,
+        c.description,
+        c.latitude,
+        c.longitude,
+        COALESCE(
+          JSON_AGG(
+            JSON_BUILD_OBJECT('id', f.id, 'name', f.name, 'icon', f.icon)
+          ) FILTER (WHERE f.id IS NOT NULL),
+          '[]'
+        ) AS facilities
+        FROM cafes c
+        LEFT JOIN bridge_facility_cafe bfc ON bfc.cafe_id = c.id
+        LEFT JOIN facilities f ON f.id = bfc.facility_id
+        WHERE c.id = $1
+        GROUP BY c.id`,
       [cafeId],
     );
 

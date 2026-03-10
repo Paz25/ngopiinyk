@@ -37,6 +37,15 @@ const menu = [
   },
 ];
 
+import dynamic from "next/dynamic";
+
+const CafeMap = dynamic(() => import("@/components/cafe/CafeMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full min-h-[400px] rounded-2xl bg-white/10 animate-pulse" />
+  ),
+});
+
 export default function CafeDetailClient({ id }: { id: string }) {
   const [cafe, setCafe] = useState<CafeDetailModel | null>(null);
   const [loading, setLoading] = useState(true);
@@ -159,7 +168,14 @@ export default function CafeDetailClient({ id }: { id: string }) {
 
       <div className="flex flex-col gap-4 py-4">
         <h2 className="text-lg font-semibold text-white">Petunjuk Lokasi</h2>
-        <div className="bg-white rounded-2xl min-h-[400px]" />
+        <div className="w-full h-[400px] rounded-2xl overflow-hidden">
+          <CafeMap
+            name={cafe.name}
+            latitude={cafe.latitude}
+            longitude={cafe.longitude}
+            gmaps_link={cafe.gmaps_link}
+          />
+        </div>
       </div>
     </main>
   );
