@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import { CategoryModel } from "@/models/CategoryModel";
+import SkeletonCard from "@/components/cards/SkeletonCard";
 
 export default function Explore() {
   const [categories, setCategories] = useState<CategoryModel[]>([]);
@@ -49,7 +50,12 @@ export default function Explore() {
 
       <div id="category" className="flex flex-wrap justify-center gap-[20px]">
         {loading ? (
-          <div className="text-sm text-black/60">Loading kategori...</div>
+          Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonCard
+              key={i}
+              className="w-full sm:w-[48%] lg:w-[30%] h-[200px] rounded-2xl"
+            />
+          ))
         ) : categories.length === 0 ? (
           <div className="text-sm text-black/60">Belum ada kategori.</div>
         ) : (

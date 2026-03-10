@@ -39,21 +39,18 @@ export default function MasonrySection() {
   }, []);
 
   return (
-    <div className="flex flex-col">
-      <h2 className="text-xl font-semibold mb-5">Lihat Mana Yang Kamu Suka</h2>
-      <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-6">
-        {loading
-          ? SKELETON_HEIGHTS.map((h, i) => (
-              <div key={i} className="break-inside-avoid mb-6">
-                <SkeletonCard className={h} />
-              </div>
-            ))
-          : cafes.map((cafe) => (
-              <div key={cafe.id} className="break-inside-avoid mb-6">
-                <CafeCard cafe={cafe} />
-              </div>
-            ))}
-      </div>
+    <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-6">
+      {loading
+        ? SKELETON_HEIGHTS.map((h, i) => (
+            <div key={i} className="break-inside-avoid mb-6">
+              <SkeletonCard className={h} />
+            </div>
+          ))
+        : cafes.map((cafe) => (
+            <div key={cafe.id} className="break-inside-avoid mb-6">
+              <CafeCard cafe={cafe} />
+            </div>
+          ))}
     </div>
   );
 }

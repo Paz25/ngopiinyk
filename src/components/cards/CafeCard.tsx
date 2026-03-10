@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CafeCardModel } from "@/models/CafeModel";
 import { encodeId } from "@/lib/hashid";
+import { CafeCardModel } from "@/models/CafeModel";
+import { Star, Trophy } from "lucide-react";
 
 type CafeCardProps = {
   cafe: CafeCardModel;
@@ -30,20 +31,30 @@ export default function CafeCard({
     >
       <div
         className={[
-          "relative w-full overflow-hidden rounded-2xl bg-white",
+          "relative w-full overflow-hidden rounded-2xl bg-white/5",
           isBest ? "h-[200px]" : "",
         ].join(" ")}
         style={isBest ? { height: imageHeight } : undefined}
       >
+        {/* Rating badge */}
         {cafe.rating != null && (
-          <div className="absolute top-2 right-2 z-10 bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded-full">
-            ⭐ {cafe.rating}
+          <div className="absolute top-2 right-2 z-10 flex gap-1 items-center bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md">
+            <Star size={11} className="text-yellow-400" fill="currentColor" />
+            {cafe.rating}
           </div>
         )}
+
+        {/* Best category badge */}
         {bestCategory && (
-          <div className="absolute bottom-2 left-2 bg-primary text-xs font-semibold px-2 py-1 rounded-full text-[var(--color-background)] w-fit">
-            Terpopuler untuk {bestCategory}
+          <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1 bg-[var(--color-primary)] text-[var(--color-background)] text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+            <Trophy size={14} />
+            {bestCategory}
           </div>
+        )}
+
+        {/* Gradient overlay */}
+        {bestCategory && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
         )}
 
         {cafe.image ? (
@@ -53,7 +64,7 @@ export default function CafeCard({
             loading="lazy"
             className={[
               "block w-full min-h-[200px] object-cover",
-              isBest ? "h-full object-cover" : "h-auto object-cover",
+              isBest ? "h-full" : "h-auto",
             ].join(" ")}
           />
         ) : (
@@ -67,9 +78,9 @@ export default function CafeCard({
         )}
       </div>
 
-      <div className="flex flex-col px-2 gap-1">
-        <h3 className="text-sm font-semibold">{cafe.name}</h3>
-        <p className="text-xs font-normal leading-tight text-white/70">
+      <div className="flex flex-col px-2 gap-1 md:gap-2">
+        <h3 className="text-sm font-semibold leading-snug">{cafe.name}</h3>
+        <p className="text-xs font-normal leading-tight text-white/50">
           {cafe.area}
         </p>
       </div>
