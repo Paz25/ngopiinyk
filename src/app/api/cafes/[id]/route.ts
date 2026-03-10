@@ -27,7 +27,20 @@ export async function GET(
             JSON_BUILD_OBJECT('id', f.id, 'name', f.name, 'icon', f.icon)
           ) FILTER (WHERE f.id IS NOT NULL),
           '[]'
-        ) AS facilities
+        ) AS facilities,
+         COALESCE(
+        (
+          SELECT JSON_AGG(img)
+          FROM (
+            SELECT id, image_path, caption
+            FROM cafe_images
+            WHERE cafe_id = c.id
+            ORDER BY id ASC
+            LIMIT 5  -- ← cukup 5 gambar untuk banner, tidak perlu semua
+          ) img
+        ),
+        '[]'
+      ) AS images
         FROM cafes c
         LEFT JOIN bridge_facility_cafe bfc ON bfc.cafe_id = c.id
         LEFT JOIN facilities f ON f.id = bfc.facility_id

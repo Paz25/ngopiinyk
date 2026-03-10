@@ -18,7 +18,7 @@ export default function CafeMap({
   const embedUrl = `https://www.google.com/maps?q=${latitude},${longitude}&z=17&output=embed`;
 
   return (
-    <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
+    <div className="relative w-full h-full rounded-2xl overflow-hidden">
       <iframe
         src={embedUrl}
         width="100%"

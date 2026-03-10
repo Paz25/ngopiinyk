@@ -8,13 +8,12 @@ import {
   MapPin,
   Clock,
   ChevronDown,
-  HouseWifi,
-  PlugZap,
-  Laptop,
 } from "lucide-react";
 import { FacilityIconMap } from "@/models/IconMap";
 import { CafeDetailModel } from "@/models/CafeModel";
 import NotFound from "@/app/not-found";
+import CafeMap from "./CafeMap";
+import CafeImageGrid from "./CafeImageGrid";
 
 const menu = [
   {
@@ -36,15 +35,6 @@ const menu = [
       "https://i.pinimg.com/736x/67/15/ec/6715ecd7877ab4581240839cd1ba3b2f.jpg",
   },
 ];
-
-import dynamic from "next/dynamic";
-
-const CafeMap = dynamic(() => import("@/components/cafe/CafeMap"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full min-h-[400px] rounded-2xl bg-white/10 animate-pulse" />
-  ),
-});
 
 export default function CafeDetailClient({ id }: { id: string }) {
   const [cafe, setCafe] = useState<CafeDetailModel | null>(null);
@@ -90,20 +80,14 @@ export default function CafeDetailClient({ id }: { id: string }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 grid-rows-2 gap-3 md:gap-4">
-          <div className="col-span-12 sm:col-span-6 md:col-span-4 row-span-2 bg-white rounded-2xl min-h-[300px]" />
-          <div className="col-span-6 md:col-span-4 row-span-1 md:row-span-2 bg-white rounded-2xl min-h-[120px] md:min-h-[200px] hidden sm:block" />
-          <div className="col-span-3 md:col-span-4 bg-white rounded-2xl min-h-[120px] md:min-h-[200px] hidden sm:block" />
-          <div className="col-span-3 md:col-span-2 bg-white rounded-2xl min-h-[120px] md:min-h-[200px] hidden sm:block" />
-          <div className="col-span-2 bg-white rounded-2xl min-h-[200px] hidden md:block" />
-        </div>
+        <CafeImageGrid images={cafe.images} cafeName={cafe.name} />
 
         <div className="flex flex-wrap-reverse md:flex-row w-full md:justify-between md:items-center gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <div className="bg-primary text-xs font-semibold px-3 py-1.5 rounded-full text-[var(--color-background)]">
+            <div className="bg-primary text-sm font-semibold px-3 py-1.5 rounded-full text-[var(--color-background)]">
               WFC (70%)
             </div>
-            <div className="border-2 border-primary text-xs font-semibold px-3 py-1.5 rounded-full text-primary">
+            <div className="border-2 border-primary text-sm font-semibold px-3 py-1.5 rounded-full text-primary">
               Hangout (30%)
             </div>
           </div>
@@ -168,7 +152,7 @@ export default function CafeDetailClient({ id }: { id: string }) {
 
       <div className="flex flex-col gap-4 py-4">
         <h2 className="text-lg font-semibold text-white">Petunjuk Lokasi</h2>
-        <div className="w-full h-[400px] rounded-2xl overflow-hidden">
+        <div className="w-full h-[500px] rounded-2xl overflow-hidden">
           <CafeMap
             name={cafe.name}
             latitude={cafe.latitude}
@@ -231,10 +215,33 @@ function OperationalHours({
     }
   })();
 
-  const closingInfo = (() => {
+  const statusInfo = (() => {
     const todayHours = opening_hours[currentDay];
-    if (todayHours?.is_24h) return "24 jam";
-    if (!isCurrentlyOpen) return null;
+
+    if (todayHours?.is_24h) return "Buka 24 jam";
+
+    if (!isCurrentlyOpen) {
+      for (let i = 1; i <= 7; i++) {
+        const nextDay = (currentDay + i) % 7;
+        const nextHours = opening_hours[nextDay];
+        if (nextHours && !nextHours.is_closed) {
+          const dayNames = [
+            "Minggu",
+            "Senin",
+            "Selasa",
+            "Rabu",
+            "Kamis",
+            "Jumat",
+            "Sabtu",
+          ];
+          if (i === 1) {
+            return `Buka besok pukul ${nextHours.is_24h ? "00:00" : nextHours.open}`;
+          }
+          return `Buka ${dayNames[nextDay]} pukul ${nextHours.is_24h ? "00:00" : nextHours.open}`;
+        }
+      }
+      return null;
+    }
 
     const todayOpen = toMinutes(todayHours?.open ?? "00:00");
     const todayClose = toMinutes(todayHours?.close ?? "00:00");
@@ -270,7 +277,7 @@ function OperationalHours({
           >
             {isCurrentlyOpen ? "Buka" : "Tutup"}
           </span>
-          {closingInfo && ` · ${closingInfo}`}
+          {statusInfo && ` · ${statusInfo}`}
         </p>
         <ChevronDown
           size={18}
