@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import {
   Heart,
   Star,
@@ -12,6 +13,8 @@ import {
   PlugZap,
   Laptop,
 } from "lucide-react";
+import { CafeDetailModel } from "@/models/CafeModel";
+import NotFound from "@/app/not-found";
 
 const menu = [
   {
@@ -45,19 +48,41 @@ const operationalHours = [
 ];
 
 export default function CafeDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const [cafe, setCafe] = useState<CafeDetailModel | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchCafe = async () => {
+      try {
+        const res = await fetch(`/api/cafes/${id}`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        setCafe(data);
+      } catch (error) {
+        console.error("[CafeDetailPage] Failed to fetch cafe:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCafe();
+  }, [id]);
+
+  if (!cafe) return <NotFound />;
+
   return (
-    <main className="flex flex-col min-h-screen w-full px-6 md:px-12 pt-4 pb-24 gap-6">
-      {/* Banner */}
+    <main className="flex flex-col min-h-screen w-full px-6 md:px-12 pt-4 pb-16 gap-6">
       <div id="detail-banner" className="flex flex-col gap-5 py-4">
-        {/* Title & Actions */}
         <div className="flex flex-col md:flex-row w-full justify-between items-start md:items-center gap-2">
           <h1 className="text-balance text-white text-xl font-semibold">
-            Homi Coffee And Space
+            {cafe.name}
           </h1>
-          <div className="flex justify-between items-center gap-4 md:gap-6 w-full md:w-auto">
+          <div className="flex justify-between items-end gap-4 md:gap-6 w-full md:w-auto">
             <div className="flex items-center gap-1.5 text-sm text-white">
               <Star size={18} className="text-yellow-400" fill="currentColor" />
-              4.8 (6.891 rating)
+              {cafe.rating} ({cafe.review_count} ulasan)
             </div>
             <div className="flex items-center gap-3">
               <Heart size={24} />
@@ -66,7 +91,6 @@ export default function CafeDetailPage() {
           </div>
         </div>
 
-        {/* Image Grid */}
         <div className="grid grid-cols-12 grid-rows-2 gap-3 md:gap-4">
           <div className="col-span-12 sm:col-span-6 md:col-span-4 row-span-2 bg-white rounded-2xl min-h-[300px]" />
           <div className="col-span-6 md:col-span-4 row-span-1 md:row-span-2 bg-white rounded-2xl min-h-[120px] md:min-h-[200px] hidden sm:block" />
@@ -75,7 +99,6 @@ export default function CafeDetailPage() {
           <div className="col-span-2 bg-white rounded-2xl min-h-[200px] hidden md:block" />
         </div>
 
-        {/* Tags & Lokasi */}
         <div className="flex flex-wrap-reverse md:flex-row w-full md:justify-between md:items-center gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <div className="bg-primary text-xs font-semibold px-3 py-1.5 rounded-full text-[var(--color-background)]">
@@ -87,13 +110,10 @@ export default function CafeDetailPage() {
           </div>
           <div className="flex items-center gap-2 text-white/80">
             <MapPin size={15} className="shrink-0" />
-            <p className="text-sm">
-              Jl. Kenari No.7, Demangan Baru, Caturtunggal
-            </p>
+            <p className="text-sm textellipsis">{cafe.address}</p>
           </div>
         </div>
 
-        {/* Deskripsi */}
         <p className="text-sm md:text-base text-justify leading-relaxed text-white/90">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet
           feugiat ipsum, in dapibus turpis. Maecenas et ornare massa. Morbi
@@ -104,7 +124,6 @@ export default function CafeDetailPage() {
 
       <div className="border-b border-white/40" />
 
-      {/* Info Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 py-4">
         <div className="md:col-span-6 flex flex-col gap-8">
           <OperationalHours />
@@ -147,8 +166,9 @@ export default function CafeDetailPage() {
       </div>
       <div className="border-b border-white/40" />
 
-      <div className="flex py-4">
+      <div className="flex flex-col gap-3 py-4">
         <h2 className="text-lg font-semibold text-white">Petunjuk Lokasi</h2>
+        <div className="col-span-12 sm:col-span-6 md:col-span-4 row-span-2 bg-white rounded-2xl min-h-[400px]" />
       </div>
     </main>
   );
@@ -195,7 +215,7 @@ function OperationalHours() {
             >
               <span>{h.day}</span>
               <span>
-                {h.open} – {h.close}
+                {h.open} - {h.close}
               </span>
             </div>
           ))}

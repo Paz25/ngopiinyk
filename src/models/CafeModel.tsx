@@ -9,10 +9,13 @@ export type CafeImageModel = {
 export type CafeModel = {
   id: number;
   name: string;
+  description: string | null;
   area: string;
   address: string;
+  gmaps_link: string;
   rating: number | null;
   review_count: number;
+  opening_hours: Record<string, { open: string; close: string }> | null;
   categories: Pick<CategoryModel, "id" | "name">[];
   images: CafeImageModel[];
 };

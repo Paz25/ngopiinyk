@@ -1,9 +1,16 @@
+import { Metadata } from "next";
 import Image from "next/image";
 
 import SearchBar from "@/components/SearchBar";
 import TrendingSection from "@/components/home/TrendingSection";
 import BestSection from "@/components/home/BestSection";
 import MasonrySection from "@/components/home/MasonrySection";
+
+export const metadata: Metadata = {
+  title:
+    "Ngopiinyk | Jelajahi kafe di Jogja sesuai kebutuhan dan ceritamu hari ini.",
+  description: "Temukan Kafe yang Tepat untuk Setiap Momen",
+};
 
 export default function HomePage() {
   return (
