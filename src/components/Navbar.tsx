@@ -48,7 +48,7 @@ export default function Navbar() {
               <a
                 key={item.name}
                 href={item.url}
-                className="text-sm cursor-pointer hover:underline"
+                className="text-sm md:text-base cursor-pointer hover:underline"
               >
                 {item.name}
               </a>

@@ -10,10 +10,10 @@ export default function Footer() {
 
         <div className="grid grid-cols-2 gap-8 md:col-span-8 md:grid-cols-2">
           <div>
-            <span className="block font-semibold mb-[20px] text-sm">
+            <span className="block font-semibold mb-[20px] text-sm md:text-base">
               Eksplor
             </span>
-            <div className="flex flex-col gap-3 text-xs">
+            <div className="flex flex-col gap-3 text-xs md:text-sm">
               <span className="cursor-pointer hover:underline">
                 Kafe untuk WFC
               </span>
@@ -29,10 +29,10 @@ export default function Footer() {
             </div>
           </div>
           <div>
-            <span className="block font-semibold mb-[20px] text-sm">
+            <span className="block font-semibold mb-[20px] text-sm md:text-base">
               Seputar Platform
             </span>
-            <div className="flex flex-col gap-3 text-xs">
+            <div className="flex flex-col gap-3 text-xs md:text-sm">
               <span className="cursor-pointer hover:underline">
                 Tentang Kami
               </span>
@@ -47,7 +47,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="flex justify-center items-center">
-        <span className="text-[10px] md:text-xs">
+        <span className="text-[10px] md:text-xs md:text-sm">
           © 2026 Pasha Rakha. All rights reserved.
         </span>
       </div>
