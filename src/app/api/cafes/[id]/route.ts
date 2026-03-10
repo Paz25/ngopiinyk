@@ -9,23 +9,28 @@ export async function GET(
   try {
     const { id } = await params;
     const cafeId = decodeId(id);
-    console.log("cafeId value:", cafeId);
-    console.log("cafeId type:", typeof cafeId);
-    // const cafeId = isNaN(Number(id)) ? decodeId(id) : Number(id);
 
     const cafe = await db.query(
       `SELECT
-         id,
-         name,
-         address,
-         gmaps_link,
-         rating,
-         review_count,
-         opening_hours,
-         description
-       FROM cafes
-       WHERE id = $1
-       LIMIT 1`,
+     c.id,
+     c.name,
+     c.address,
+     c.gmaps_link,
+     c.rating,
+     c.review_count,
+     c.opening_hours,
+     c.description,
+     COALESCE(
+       JSON_AGG(
+         JSON_BUILD_OBJECT('id', f.id, 'name', f.name, 'icon', f.icon)
+       ) FILTER (WHERE f.id IS NOT NULL),
+       '[]'
+     ) AS facilities
+      FROM cafes c
+      LEFT JOIN bridge_facility_cafe bfc ON bfc.cafe_id = c.id
+      LEFT JOIN facilities f ON f.id = bfc.facility_id
+      WHERE c.id = $1
+      GROUP BY c.id`,
       [cafeId],
     );
 

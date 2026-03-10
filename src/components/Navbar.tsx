@@ -37,7 +37,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="w-full flex justify-between px-6 sm:px-12 py-3 sm:py-5 sticky top-0 z-50 bg-[var(--color-background)] shadow-sm">
+      <nav className="w-full flex justify-between px-6 md:px-12 py-3 sm:py-5 sticky top-0 z-50 bg-[var(--color-background)] shadow-sm">
         <div className="flex gap-10 items-center">
           <a href="/">
             <span className={`${koulen.className} text-2xl`}>Ngopiin.yk</span>

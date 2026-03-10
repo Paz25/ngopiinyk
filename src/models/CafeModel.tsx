@@ -1,5 +1,11 @@
 import { CategoryModel } from "./CategoryModel";
 
+export interface FacilityModel {
+  id: number;
+  name: string;
+  icon: string;
+}
+
 export type CafeImageModel = {
   id: number;
   image_path: string;
@@ -15,8 +21,17 @@ export type CafeModel = {
   gmaps_link: string;
   rating: number | null;
   review_count: number;
-  opening_hours: Record<string, { open: string; close: string }> | null;
+  opening_hours: Record<
+    string,
+    {
+      open: string;
+      close: string;
+      is_24h: boolean;
+      is_closed: boolean;
+    }
+  >;
   categories: Pick<CategoryModel, "id" | "name">[];
+  facilities: FacilityModel[];
   images: CafeImageModel[];
 };
 
