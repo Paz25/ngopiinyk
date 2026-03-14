@@ -1,4 +1,5 @@
 import { CategoryModel } from "./CategoryModel";
+import { CafeMenuModel } from "./CafeMenuModel";
 
 export interface FacilityModel {
   id: number;
@@ -30,8 +31,11 @@ export type CafeModel = {
       is_closed: boolean;
     }
   >;
-  categories: Pick<CategoryModel, "id" | "name">[];
+  latitude: number;
+  longitude: number;
+  categories: CategoryModel[];
   facilities: FacilityModel[];
+  menus: CafeMenuModel[];
   images: CafeImageModel[];
 };
 
