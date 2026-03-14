@@ -1,10 +1,9 @@
 import { Metadata } from "next";
-import { decodeId } from "@/lib/hashid";
 import CafeDetailClient from "@/components/cafe/CafeDetailClient";
 import db from "@/lib/db";
 
 async function getCafe(id: string) {
-  const cafeId = decodeId(id);
+  const cafeId = id;
   if (!cafeId) return null;
   const result = await db.query(
     `SELECT id, name, description FROM cafes WHERE id = $1 LIMIT 1`,

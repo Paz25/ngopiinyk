@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { encodeId } from "@/lib/hashid";
 import SkeletonCard from "../cards/SkeletonCard";
 
 type TrendingCafe = {
@@ -20,7 +19,7 @@ export default function TrendingSection() {
 
   useEffect(() => {
     let cancelled = false;
-    async function fetchTrending() {
+    (async () => {
       try {
         const res = await fetch("/api/cafes/trending");
         const json = await res.json();
@@ -33,8 +32,7 @@ export default function TrendingSection() {
       } finally {
         if (!cancelled) setLoading(false);
       }
-    }
-    fetchTrending();
+    })();
     return () => {
       cancelled = true;
     };
@@ -74,7 +72,7 @@ function TrendingCard({
   const router = useRouter();
   return (
     <div
-      onClick={() => router.push(`/cafes/${encodeId(cafe.id)}`)}
+      onClick={() => router.push(`/cafes/${cafe.id}`)}
       className={[
         "relative overflow-hidden cursor-pointer group",
         "rounded-2xl min-h-[200px]",

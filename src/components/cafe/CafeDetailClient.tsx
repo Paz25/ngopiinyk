@@ -41,10 +41,7 @@ export default function CafeDetailClient({ id }: { id: string }) {
   if (loading) return <CafeDetailSkeleton />;
   if (!cafe) return <NotFound />;
 
-  const primaryColor = getComputedStyle(document.documentElement)
-    .getPropertyValue("--primary")
-    .trim();
-  const categoryColors = [primaryColor, "#7F77DD", "#D85A30", "#378ADD"];
+  const categoryColors = ["#84aa04", "#7F77DD", "#D85A30", "#378ADD"];
 
   return (
     <main className="flex flex-col min-h-screen w-full px-6 md:px-12 pt-4 pb-16 gap-6">
@@ -108,7 +105,18 @@ export default function CafeDetailClient({ id }: { id: string }) {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 py-4">
         <div className="md:col-span-6 flex flex-col gap-8">
-          <OperationalHours opening_hours={cafe.opening_hours} />
+          {cafe.opening_hours ? (
+            <OperationalHours opening_hours={cafe.opening_hours} />
+          ) : (
+            <div className="flex flex-col gap-4">
+              <h2 className="text-lg font-semibold text-white">
+                Jam Operasional
+              </h2>
+              <p className="text-sm text-white/50">
+                Belum ada data jam operasional.
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-4">
             <h2 className="text-lg font-semibold text-white">

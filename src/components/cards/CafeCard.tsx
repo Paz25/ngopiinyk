@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { encodeId } from "@/lib/hashid";
 import { CafeCardModel } from "@/models/CafeModel";
 import { Star, Trophy } from "lucide-react";
 
@@ -27,7 +26,7 @@ export default function CafeCard({
   return (
     <div
       className={`flex flex-col gap-[10px] transition duration-300 hover:scale-[1.04] cursor-pointer ${className}`}
-      onClick={() => router.push(`/cafes/${encodeId(cafe.id)}`)}
+      onClick={() => router.push(`/cafes/${cafe.id}`)}
     >
       <div
         className={[
