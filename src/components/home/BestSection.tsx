@@ -46,10 +46,10 @@ export default function BestSection() {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
       {loading
         ? Array.from({ length: 5 }).map((_, i) => (
-            <SkeletonCard key={i} className="h-[200px]" />
+            <SkeletonCard key={i} className="h-[200px] md:h-[220px]" />
           ))
         : cafes.map((cafe) => (
             <CafeCard
