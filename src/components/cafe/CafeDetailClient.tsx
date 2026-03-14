@@ -15,27 +15,6 @@ import NotFound from "@/app/not-found";
 import CafeMap from "./CafeMap";
 import CafeImageGrid from "./CafeImageGrid";
 
-const menu = [
-  {
-    name: "Latte",
-    price: "IDR 30.000",
-    image:
-      "https://i.pinimg.com/736x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg",
-  },
-  {
-    name: "Cappuccino",
-    price: "IDR 28.000",
-    image:
-      "https://i.pinimg.com/736x/45/38/10/453810958154922d419b4afb3ffda0c5.jpg",
-  },
-  {
-    name: "Tahu Cabe Garam",
-    price: "IDR 15.000",
-    image:
-      "https://i.pinimg.com/736x/67/15/ec/6715ecd7877ab4581240839cd1ba3b2f.jpg",
-  },
-];
-
 export default function CafeDetailClient({ id }: { id: string }) {
   const [cafe, setCafe] = useState<CafeDetailModel | null>(null);
   const [loading, setLoading] = useState(true);
@@ -59,7 +38,13 @@ export default function CafeDetailClient({ id }: { id: string }) {
     fetchCafe();
   }, [id]);
 
+  if (loading) return <CafeDetailSkeleton />;
   if (!cafe) return <NotFound />;
+
+  const primaryColor = getComputedStyle(document.documentElement)
+    .getPropertyValue("--primary")
+    .trim();
+  const categoryColors = [primaryColor, "#7F77DD", "#D85A30", "#378ADD"];
 
   return (
     <main className="flex flex-col min-h-screen w-full px-6 md:px-12 pt-4 pb-16 gap-6">
@@ -83,13 +68,30 @@ export default function CafeDetailClient({ id }: { id: string }) {
         <CafeImageGrid images={cafe.images} cafeName={cafe.name} />
 
         <div className="flex flex-wrap-reverse md:flex-row w-full md:justify-between md:items-center gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="bg-primary text-sm font-semibold px-3 py-1.5 rounded-full text-[var(--color-background)]">
-              WFC (70%)
-            </div>
-            <div className="border-2 border-primary text-sm font-semibold px-3 py-1.5 rounded-full text-primary">
-              Hangout (30%)
-            </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-3">
+            {cafe.categories.map((cat, i) => {
+              return (
+                <div key={cat.id} className="flex flex-col gap-2 min-w-[150px]">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-white">
+                      {cat.name}
+                    </span>
+                    <span className="text-xs text-white/60">
+                      {cat.percentage}%
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${cat.percentage}%`,
+                        background: categoryColors[i % categoryColors.length],
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <div className="flex items-center gap-2 text-white/80">
             <MapPin size={15} className="shrink-0" />
@@ -135,17 +137,21 @@ export default function CafeDetailClient({ id }: { id: string }) {
 
         <div className="md:col-span-6 flex flex-col gap-4">
           <h2 className="text-lg font-semibold text-white">Rekomendasi Menu</h2>
-          <div className="grid grid-cols-12 gap-3">
-            {menu.map((item) => (
-              <MenuItemCard
-                key={item.name}
-                name={item.name}
-                price={item.price}
-                image={item.image}
-                className="col-span-6 md:col-span-4"
-              />
-            ))}
-          </div>
+          {cafe.menus.length > 0 ? (
+            <div className="grid grid-cols-12 gap-3">
+              {cafe.menus.map((item) => (
+                <MenuItemCard
+                  key={item.id}
+                  name={item.name}
+                  price={`IDR ${item.price.toLocaleString("id-ID")}`}
+                  image={item.image_path}
+                  className="col-span-6 md:col-span-4"
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-white/50">Belum ada data menu.</p>
+          )}
         </div>
       </div>
       <div className="border-b border-white/40" />
@@ -364,5 +370,55 @@ function MenuItemCard({
         <p className="text-xs md:text-sm text-white/60">{price}</p>
       </div>
     </div>
+  );
+}
+
+function CafeDetailSkeleton() {
+  return (
+    <main className="flex flex-col min-h-screen w-full px-6 md:px-12 pt-4 pb-16 gap-6">
+      <div className="flex flex-col gap-5 py-4">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row w-full justify-between items-start md:items-center gap-2">
+          <div className="h-7 w-48 rounded-lg bg-white/10 animate-pulse" />
+          <div className="h-5 w-36 rounded-lg bg-white/10 animate-pulse" />
+        </div>
+
+        {/* Image grid */}
+        <div className="hidden lg:grid grid-cols-12 gap-4 h-[440px]">
+          <div className="col-span-4 row-span-2 rounded-2xl bg-white/10 animate-pulse" />
+          <div className="col-span-4 row-span-2 rounded-2xl bg-white/10 animate-pulse" />
+          <div className="col-span-4 rounded-2xl bg-white/10 animate-pulse" />
+          <div className="col-span-2 rounded-2xl bg-white/10 animate-pulse" />
+          <div className="col-span-2 rounded-2xl bg-white/10 animate-pulse" />
+        </div>
+        <div className="hidden sm:grid lg:hidden grid-cols-12 gap-3 h-[260px]">
+          <div className="col-span-6 row-span-2 rounded-2xl bg-white/10 animate-pulse" />
+          <div className="col-span-6 rounded-2xl bg-white/10 animate-pulse" />
+          <div className="col-span-3 rounded-2xl bg-white/10 animate-pulse" />
+          <div className="col-span-3 rounded-2xl bg-white/10 animate-pulse" />
+        </div>
+        <div className="block sm:hidden rounded-2xl bg-white/10 animate-pulse min-h-[300px]" />
+
+        {/* Category bars */}
+        <div className="flex flex-wrap gap-x-6 gap-y-3">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex flex-col gap-2 min-w-[150px]">
+              <div className="flex justify-between">
+                <div className="h-4 w-16 rounded bg-white/10 animate-pulse" />
+                <div className="h-4 w-8 rounded bg-white/10 animate-pulse" />
+              </div>
+              <div className="h-2 rounded-full bg-white/10 animate-pulse" />
+            </div>
+          ))}
+        </div>
+
+        {/* Description */}
+        <div className="flex flex-col gap-2">
+          <div className="h-4 w-full rounded bg-white/10 animate-pulse" />
+          <div className="h-4 w-full rounded bg-white/10 animate-pulse" />
+          <div className="h-4 w-3/4 rounded bg-white/10 animate-pulse" />
+        </div>
+      </div>
+    </main>
   );
 }

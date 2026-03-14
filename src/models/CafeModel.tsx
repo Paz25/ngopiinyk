@@ -1,4 +1,5 @@
 import { CategoryModel } from "./CategoryModel";
+import { CafeMenuModel } from "./CafeMenuModel";
 
 export interface FacilityModel {
   id: number;
@@ -32,8 +33,9 @@ export type CafeModel = {
   >;
   latitude: number;
   longitude: number;
-  categories: Pick<CategoryModel, "id" | "name">[];
+  categories: CategoryModel[];
   facilities: FacilityModel[];
+  menus: CafeMenuModel[];
   images: CafeImageModel[];
 };
 

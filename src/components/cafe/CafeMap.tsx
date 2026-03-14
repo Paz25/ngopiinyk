@@ -33,7 +33,7 @@ export default function CafeMap({
         href={gmaps_link}
         target="_blank"
         rel="noopener noreferrer"
-        className="absolute top-3 left-3 flex items-center gap-1.5 bg-white text-gray-700 text-sm font-semibold px-3 py-1.5 rounded-full shadow-md hover:bg-gray-50 transition"
+        className="absolute top-3 left-3 flex items-center gap-1.5 bg-white text-gray-700 text-sm font-semibold px-4 py-2 rounded-full shadow-md hover:bg-gray-50 transition"
       >
         <MapPin size={13} />
         Buka di Google Maps

@@ -34,7 +34,7 @@ export default function CafeImageGrid({
   return (
     <>
       {/* ── MOBILE (< sm): hanya gambar 1 ── */}
-      <div className="block sm:hidden rounded-2xl overflow-hidden bg-white/10 max-h-[300px]">
+      <div className="block sm:hidden rounded-2xl overflow-hidden bg-white/10 max-h-[400px]">
         <ImgCell image={images[0]} cafeName={cafeName} priority />
       </div>
 
