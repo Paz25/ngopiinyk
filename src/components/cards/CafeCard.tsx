@@ -33,7 +33,6 @@ export default function CafeCard({
         className="relative w-full overflow-hidden rounded-2xl bg-white/10"
         style={isBest ? { height: imageHeight } : undefined}
       >
-        {/* Rating badge */}
         {cafe.rating != null && (
           <div className="absolute top-2 right-2 z-10 flex gap-1 items-center bg-black/50 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
             <Star size={11} className="text-yellow-400" fill="currentColor" />
@@ -41,7 +40,6 @@ export default function CafeCard({
           </div>
         )}
 
-        {/* Best category badge */}
         {bestCategory && (
           <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1 bg-[var(--color-primary)] text-[var(--color-background)] text-xs font-bold px-2 py-1 rounded-full shadow">
             <Trophy size={14} />
@@ -49,7 +47,6 @@ export default function CafeCard({
           </div>
         )}
 
-        {/* Gradient overlay — only for best variant */}
         {bestCategory && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
         )}

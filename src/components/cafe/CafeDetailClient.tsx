@@ -17,14 +17,12 @@ import CafeImageGrid from "./CafeImageGrid";
 
 const CATEGORY_COLORS = ["#84aa04", "#7F77DD", "#D85A30", "#378ADD"];
 
-// Reusable section heading
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return <h2 className="text-lg font-semibold text-white">{children}</h2>;
 }
 
-// Reusable empty-state text
 function EmptyState({ children }: { children: React.ReactNode }) {
-  return <p className="text-sm text-white/40">{children}</p>;
+  return <p className="text-sm text-white/70">{children}</p>;
 }
 
 export default function CafeDetailClient({ id }: { id: string }) {
@@ -40,6 +38,7 @@ export default function CafeDetailClient({ id }: { id: string }) {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         setCafe(data);
+        window.scrollTo({ top: 0, behavior: "instant" });
       } catch (error) {
         console.error("[CafeDetailPage] Failed to fetch cafe:", error);
       } finally {
@@ -57,18 +56,17 @@ export default function CafeDetailClient({ id }: { id: string }) {
     <main className="flex flex-col min-h-screen w-full px-6 md:px-12 pt-4 pb-16 gap-10">
       {/* ── Banner ─────────────────────────────────────────────────────────── */}
       <div id="detail-banner" className="flex flex-col gap-6 py-4">
-        {/* Title + meta row */}
         <div className="flex flex-col md:flex-row w-full justify-between items-start md:items-center gap-3">
           <h1 className="text-xl font-semibold text-white">{cafe.name}</h1>
           <div className="flex justify-between items-end gap-6 w-full md:w-auto">
-            <div className="flex items-center gap-1.5 text-sm text-white ">
+            <div className="flex items-center gap-1.5 text-sm text-white">
               <Star
                 size={16}
                 className="text-yellow-400 shrink-0"
                 fill="currentColor"
               />
               <span>{cafe.rating}</span>
-              <span className="text-white/40">
+              <span className="text-white/70">
                 ({cafe.review_count} ulasan)
               </span>
             </div>
@@ -89,7 +87,7 @@ export default function CafeDetailClient({ id }: { id: string }) {
         <CafeImageGrid images={cafe.images} cafeName={cafe.name} />
 
         {/* Category bars + address */}
-        <div className="flex flex-col-reverse md:flex-row w-full md:justify-between md:items-cennter gap-4">
+        <div className="flex flex-col-reverse md:flex-row w-full md:justify-between md:items-center gap-4">
           <div className="flex flex-wrap gap-x-6 gap-y-4">
             {cafe.categories.map((cat, i) => (
               <div key={cat.id} className="flex flex-col gap-2 min-w-[150px]">
@@ -97,7 +95,7 @@ export default function CafeDetailClient({ id }: { id: string }) {
                   <span className="text-sm font-medium text-white">
                     {cat.name}
                   </span>
-                  <span className="text-xs text-white/40">
+                  <span className="text-xs text-white/70">
                     {cat.percentage}%
                   </span>
                 </div>
@@ -116,7 +114,7 @@ export default function CafeDetailClient({ id }: { id: string }) {
 
           <div className="flex items-center gap-2 text-white/70">
             <MapPin size={14} className="shrink-0" />
-            <p className="text-sm max-w-lg truncate md:overflow-visible">
+            <p className="text-sm truncate max-w-xs md:max-w-sm">
               {cafe.address}
             </p>
           </div>
@@ -167,11 +165,13 @@ export default function CafeDetailClient({ id }: { id: string }) {
                   <div
                     className={`md:pl-2 flex flex-col md:flex-row gap-4 md:gap-x-8`}
                   >
+                    {/* Kolom kiri: selalu ada */}
                     <div className="flex flex-col gap-4 flex-1">
                       {left.map((f) => (
                         <FacilityItem key={f.id} facility={f} />
                       ))}
                     </div>
+                    {/* Kolom kanan: hanya render jika ada item ke-5 */}
                     {right.length > 0 && (
                       <div className="flex flex-col gap-4 flex-1">
                         {right.map((f) => (
@@ -226,8 +226,6 @@ export default function CafeDetailClient({ id }: { id: string }) {
     </main>
   );
 }
-
-// ─── Operational Hours ────────────────────────────────────────────────────────
 
 const DAY_NAMES = [
   "Minggu",
@@ -352,7 +350,7 @@ function OperationalHours({
                   "flex justify-between items-center px-3 py-2 rounded-lg text-sm",
                   isToday
                     ? "bg-white/10 text-white font-medium"
-                    : "text-white/40",
+                    : "text-white/70",
                 ].join(" ")}
               >
                 <span>{DAY_NAMES[dayNum]}</span>
@@ -372,8 +370,6 @@ function OperationalHours({
   );
 }
 
-// ─── Menu Item Card ───────────────────────────────────────────────────────────
-
 function MenuItemCard({
   name,
   price,
@@ -388,7 +384,7 @@ function MenuItemCard({
   className?: string;
 }) {
   return (
-    <div className={`flex flex-col gap-2 ${className ?? ""}`}>
+    <div className={`flex flex-col gap-3 ${className ?? ""}`}>
       <div className="relative w-full overflow-hidden rounded-xl bg-white/5 aspect-square">
         {specialty && (
           <>
@@ -409,11 +405,11 @@ function MenuItemCard({
           <div className="w-full h-full bg-white/10" />
         )}
       </div>
-      <div className="flex flex-col px-1 gap-0.5">
+      <div className="flex flex-col  px-2 gap-1.5">
         <h3 className="text-sm md:text-base font-semibold text-white leading-snug line-clamp-2">
           {name}
         </h3>
-        <p className="text-xs md:text-sm text-white/40">{price}</p>
+        <p className="text-xs md:text-sm text-white/70">{price}</p>
       </div>
     </div>
   );

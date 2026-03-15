@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 
+import ScrollToTopButton from "@/components/buttons/ScrollToTopButton";
 import SearchBar from "@/components/SearchBar";
 import TrendingSection from "@/components/home/TrendingSection";
 import BestSection from "@/components/home/BestSection";
@@ -61,6 +62,7 @@ export default function HomePage() {
         </h2>
         <MasonrySection />
       </div>
+      <ScrollToTopButton />
     </main>
   );
 }
