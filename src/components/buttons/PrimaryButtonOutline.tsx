@@ -1,11 +1,18 @@
 type PrimaryButtonProps = {
-  title: string;
+  children?: React.ReactNode;
+  onclick?: () => void;
 };
 
-export default function PrimaryButtonOutline({ title }: PrimaryButtonProps) {
+export default function PrimaryButtonOutline({
+  children,
+  onclick,
+}: PrimaryButtonProps) {
   return (
-    <button className="px-6 py-2 rounded-full font-medium text-[var(--color-primary)] border-2 border-[var(--color-primary)] cursor-pointer text-sm">
-      {title}
+    <button
+      className="px-6 py-2.5 text-sm rounded-full font-medium text-[var(--color-primary)] border-2 border-[var(--color-primary)] hover:bg-white/10 transition-colors duration-200 cursor-pointer"
+      onClick={onclick}
+    >
+      {children}
     </button>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import PrimaryButtonOutline from "./buttons/PrimaryButtonOutline";
 import { koulen } from "@/utils/fonts";
@@ -12,6 +13,7 @@ export type Menu = {
 };
 
 export default function Navbar() {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menu: Menu[] = [
@@ -57,8 +59,12 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex gap-2">
-          <PrimaryButtonOutline title="Masuk" />
-          <PrimaryButton title="Daftar" />
+          <PrimaryButtonOutline onclick={() => router.push("/login")}>
+            Masuk
+          </PrimaryButtonOutline>
+          <PrimaryButton onclick={() => router.push("/register")}>
+            Daftar
+          </PrimaryButton>
         </div>
 
         {/* Hamburger Button Mobile */}
@@ -111,8 +117,12 @@ export default function Navbar() {
         </div>
 
         <div className="flex flex-col gap-3 mt-auto">
-          <PrimaryButtonOutline title="Masuk" />
-          <PrimaryButton title="Daftar" />
+          <PrimaryButtonOutline onclick={() => router.push("/login")}>
+            Masuk
+          </PrimaryButtonOutline>
+          <PrimaryButton onclick={() => router.push("/register")}>
+            Daftar
+          </PrimaryButton>
         </div>
       </div>
     </>
