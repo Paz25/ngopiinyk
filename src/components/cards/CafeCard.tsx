@@ -7,6 +7,7 @@ import { Star, Trophy } from "lucide-react";
 type CafeCardProps = {
   cafe: CafeCardModel;
   className?: string;
+  imageClassName?: string;
   variant?: "masonry" | "best";
   bestCategory?: string;
   imageHeight?: number;
@@ -15,6 +16,7 @@ type CafeCardProps = {
 export default function CafeCard({
   cafe,
   className = "",
+  imageClassName = "",
   variant = "masonry",
   bestCategory,
   imageHeight = 200,
@@ -57,8 +59,9 @@ export default function CafeCard({
             alt={cafe.name}
             loading="lazy"
             className={[
-              "block w-full min-h-[200px] object-cover object-center",
+              "block object-cover object-center",
               isBest ? "h-full" : "h-auto",
+              imageClassName ? "w-full min-h-[200px]" : imageClassName,
             ].join(" ")}
           />
         ) : (

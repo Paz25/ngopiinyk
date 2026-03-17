@@ -4,7 +4,7 @@ import SearchBar from "@/components/SearchBar";
 import CategoryCardSection from "@/components/explore/CategoryCardSection";
 
 export const metadata: Metadata = {
-  title: "Eksplor Kafe | Ngopiinyk",
+  title: "Ngopiinyk | Eksplor Kafe yang Cocok Untukmu",
   description: "Temukan kafe terbaik di Yogyakarta",
 };
 
