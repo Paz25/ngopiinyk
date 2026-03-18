@@ -39,15 +39,15 @@ export default function MasonrySection() {
   }, []);
 
   return (
-    <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-6">
+    <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-6 gap-3 md:gap-4">
       {loading
         ? SKELETON_HEIGHTS.map((h, i) => (
-            <div key={i} className="break-inside-avoid mb-6">
+            <div key={i} className="break-inside-avoid mb-3 md:mb-4">
               <SkeletonCard className={h} />
             </div>
           ))
         : cafes.map((cafe) => (
-            <div key={cafe.id} className="break-inside-avoid mb-6">
+            <div key={cafe.id} className="break-inside-avoid mb-3 md:mb-6">
               <CafeCard cafe={cafe} />
             </div>
           ))}

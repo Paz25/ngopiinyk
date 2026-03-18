@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import db from "@/lib/db";
-import { decodeId } from "@/lib/hashid";
 
 export async function GET(
   _req: NextRequest,
@@ -8,7 +7,6 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const cafeId = decodeId(id);
 
     const cafe = await db.query(
       `SELECT
@@ -82,7 +80,7 @@ export async function GET(
       FROM cafes c
       WHERE c.id = $1
       GROUP BY c.id`,
-      [cafeId],
+      [id],
     );
 
     if (!cafe.rows.length) {
