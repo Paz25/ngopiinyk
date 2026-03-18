@@ -20,22 +20,12 @@ import {
 import FormField from "@/components/form/FormField";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import CafeCard from "@/components/cards/CafeCard";
-import { CafeCardModel } from "@/models/CafeModel";
+import PrimaryButtonOutline from "@/components/buttons/PrimaryButtonOutline";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+import { CafeCardModel } from "@/models/CafeModel";
+import { UserModel } from "@/models/UserModel";
 
 type Tab = "saved" | "liked" | "posts" | "settings";
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  profile_picture_path: string | null;
-  is_active: boolean;
-  email_verified_at: string | null;
-  created_at: string;
-  role: "customer" | "admin";
-};
 
 type SavedCafe = {
   id: number;
@@ -57,7 +47,7 @@ type UserPost = {
 
 // ─── Mock data (ganti dengan fetch asli) ─────────────────────────────────────
 
-const MOCK_USER: User = {
+const MOCK_USER: UserModel = {
   id: "abc-123",
   name: "Arya Wirawan",
   email: "arya@email.com",
@@ -311,7 +301,6 @@ function CafeGrid({
     return <p className="text-sm text-white/70">{emptyText}</p>;
   }
 
-  // SavedCafe → CafeCardModel shape (keduanya identik strukturnya)
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
       {cafes.map((cafe) => (
@@ -400,7 +389,7 @@ function PostsList({ posts }: { posts: UserPost[] }) {
 
 // ─── Settings Panel ───────────────────────────────────────────────────────────
 
-function SettingsPanel({ user }: { user: User }) {
+function SettingsPanel({ user }: { user: UserModel }) {
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -502,7 +491,7 @@ function SettingsPanel({ user }: { user: User }) {
               required
               autoComplete="new-password"
             />
-            <PrimaryButton>Ubah Kata Sandi</PrimaryButton>
+            <PrimaryButtonOutline>Ubah Kata Sandi</PrimaryButtonOutline>
           </form>
         </section>
       </div>

@@ -61,16 +61,16 @@ export default function CafeCard({
             className={[
               "block object-cover object-center",
               isBest ? "h-full" : "h-auto",
-              imageClassName ? "w-full min-h-[200px]" : imageClassName,
+              imageClassName || "w-full min-h-[200px]",
             ].join(" ")}
           />
         ) : (
           <div
-            className={
-              isBest
-                ? "w-full h-full bg-white/10"
-                : "w-full h-[200px] bg-white/10"
-            }
+            className={[
+              "bg-white/20",
+              isBest ? "h-full" : "h-auto",
+              imageClassName || "w-full min-h-[200px]",
+            ].join(" ")}
           />
         )}
       </div>
