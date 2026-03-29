@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { encodeId } from "@/lib/hashid";
 import SkeletonCard from "../cards/SkeletonCard";
 
 type TrendingCafe = {
@@ -20,7 +19,7 @@ export default function TrendingSection() {
 
   useEffect(() => {
     let cancelled = false;
-    async function fetchTrending() {
+    (async () => {
       try {
         const res = await fetch("/api/cafes/trending");
         const json = await res.json();
@@ -33,8 +32,7 @@ export default function TrendingSection() {
       } finally {
         if (!cancelled) setLoading(false);
       }
-    }
-    fetchTrending();
+    })();
     return () => {
       cancelled = true;
     };
@@ -74,7 +72,7 @@ function TrendingCard({
   const router = useRouter();
   return (
     <div
-      onClick={() => router.push(`/cafes/${encodeId(cafe.id)}`)}
+      onClick={() => router.push(`/cafes/${cafe.id}`)}
       className={[
         "relative overflow-hidden cursor-pointer group",
         "rounded-2xl min-h-[200px]",
@@ -89,16 +87,16 @@ function TrendingCard({
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
       ) : (
-        <div className="absolute inset-0 bg-gray-200" />
+        <div className="absolute inset-0 bg-white/10" />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:bg-black/40 transition-all duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-all duration-300 group-hover:bg-black/50" />
 
-      <div className="absolute bottom-0 left-0 p-3 md:p-4 flex flex-col gap-1 md:gap-2">
-        <div className="text-sm md:text-base font-semibold text-white">
+      <div className="absolute bottom-0 left-0 p-4 flex flex-col gap-1.5">
+        <p className="text-sm md:text-base font-semibold text-white">
           {cafe.name}
-        </div>
-        <div className="text-xs text-white/70">{cafe.area}</div>
+        </p>
+        <p className="text-xs md:text-sm text-white/70">{cafe.area}</p>
       </div>
     </div>
   );

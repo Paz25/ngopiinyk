@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { encodeId } from "@/lib/hashid";
 import { CafeCardModel } from "@/models/CafeModel";
 import { Star, Trophy } from "lucide-react";
 
 type CafeCardProps = {
   cafe: CafeCardModel;
   className?: string;
+  imageClassName?: string;
   variant?: "masonry" | "best";
   bestCategory?: string;
   imageHeight?: number;
@@ -16,6 +16,7 @@ type CafeCardProps = {
 export default function CafeCard({
   cafe,
   className = "",
+  imageClassName = "",
   variant = "masonry",
   bestCategory,
   imageHeight = 200,
@@ -26,35 +27,30 @@ export default function CafeCard({
 
   return (
     <div
-      className={`flex flex-col gap-[10px] transition duration-300 hover:scale-[1.04] cursor-pointer ${className}`}
-      onClick={() => router.push(`/cafes/${encodeId(cafe.id)}`)}
+      className={`flex flex-col gap-3 transition duration-300 hover:scale-[1.02] cursor-pointer ${className}`}
+      onClick={() => router.push(`/cafes/${cafe.id}`)}
     >
+      {/* ── Image container ─────────────────────────────────────────────── */}
       <div
-        className={[
-          "relative w-full overflow-hidden rounded-2xl bg-white/5",
-          isBest ? "h-[200px]" : "",
-        ].join(" ")}
+        className="relative w-full overflow-hidden rounded-2xl bg-white/10"
         style={isBest ? { height: imageHeight } : undefined}
       >
-        {/* Rating badge */}
         {cafe.rating != null && (
-          <div className="absolute top-2 right-2 z-10 flex gap-1 items-center bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md">
+          <div className="absolute top-2 right-2 z-10 flex gap-1 items-center bg-black/50 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
             <Star size={11} className="text-yellow-400" fill="currentColor" />
             {cafe.rating}
           </div>
         )}
 
-        {/* Best category badge */}
         {bestCategory && (
-          <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1 bg-[var(--color-primary)] text-[var(--color-background)] text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+          <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1 bg-[var(--color-primary)] text-[var(--color-background)] text-xs font-bold px-2 py-1 rounded-full shadow">
             <Trophy size={14} />
             {bestCategory}
           </div>
         )}
 
-        {/* Gradient overlay */}
         {bestCategory && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
         )}
 
         {cafe.image ? (
@@ -63,26 +59,28 @@ export default function CafeCard({
             alt={cafe.name}
             loading="lazy"
             className={[
-              "block w-full min-h-[200px] object-cover",
+              "block object-cover object-center",
               isBest ? "h-full" : "h-auto",
+              imageClassName || "w-full min-h-[200px]",
             ].join(" ")}
           />
         ) : (
           <div
-            className={
-              isBest
-                ? "w-full h-full bg-white/10"
-                : "w-full h-[200px] bg-white/10"
-            }
+            className={[
+              "bg-white/20",
+              isBest ? "h-full" : "h-auto",
+              imageClassName || "w-full min-h-[200px]",
+            ].join(" ")}
           />
         )}
       </div>
 
-      <div className="flex flex-col px-2 gap-1 md:gap-2">
-        <h3 className="text-sm font-semibold leading-snug">{cafe.name}</h3>
-        <p className="text-xs font-normal leading-tight text-white/50">
-          {cafe.area}
-        </p>
+      {/* ── Card info ───────────────────────────────────────────────────── */}
+      <div className="flex flex-col px-2 gap-1.5">
+        <h3 className="text-sm font-semibold text-white leading-snug">
+          {cafe.name}
+        </h3>
+        <p className="text-xs text-white/70 leading-tight">{cafe.area}</p>
       </div>
     </div>
   );

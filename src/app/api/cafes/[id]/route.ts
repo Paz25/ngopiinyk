@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import db from "@/lib/db";
-import { decodeId } from "@/lib/hashid";
 
 export async function GET(
   _req: NextRequest,
@@ -8,30 +7,80 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const cafeId = decodeId(id);
 
     const cafe = await db.query(
       `SELECT
-     c.id,
-     c.name,
-     c.address,
-     c.gmaps_link,
-     c.rating,
-     c.review_count,
-     c.opening_hours,
-     c.description,
-     COALESCE(
-       JSON_AGG(
-         JSON_BUILD_OBJECT('id', f.id, 'name', f.name, 'icon', f.icon)
-       ) FILTER (WHERE f.id IS NOT NULL),
-       '[]'
-     ) AS facilities
+        c.id,
+        c.name,
+        c.address,
+        c.gmaps_link,
+        c.rating,
+        c.review_count,
+        c.opening_hours,
+        c.description,
+        c.latitude,
+        c.longitude,
+        COALESCE(
+          (
+            SELECT JSON_AGG(row)
+            FROM (
+              SELECT DISTINCT ON (f.id)
+                JSON_BUILD_OBJECT('id', f.id, 'name', f.name, 'icon', f.icon) AS row
+              FROM bridge_facility_cafe bfc2
+              JOIN facilities f ON f.id = bfc2.facility_id
+              WHERE bfc2.cafe_id = c.id
+            ) sub
+          ),
+          '[]'
+        ) AS facilities,
+        COALESCE(
+          (
+            SELECT JSON_AGG(img)
+            FROM (
+              SELECT id, image_path, caption
+              FROM cafe_images
+              WHERE cafe_id = c.id
+              ORDER BY id ASC
+              LIMIT 5
+            ) img
+          ),
+          '[]'
+        ) AS images,
+        COALESCE(
+          (
+            SELECT JSON_AGG(
+              JSON_BUILD_OBJECT(
+                'id', cat.id,
+                'name', cat.name,
+                'percentage', bcc.percentage
+              )
+              ORDER BY bcc.percentage DESC
+            )
+            FROM bridge_category_cafe bcc
+            JOIN categories cat ON cat.id = bcc.category_id
+            WHERE bcc.cafe_id = c.id
+          ),
+          '[]'
+        ) AS categories,
+         COALESCE(
+          (
+            SELECT JSON_AGG(
+              JSON_BUILD_OBJECT(
+                'id', m.id,
+                'name', m.name,
+                'price', m.price,
+                'image_path', m.image_path
+              )
+            )
+            FROM cafe_menus m
+            WHERE m.cafe_id = c.id
+          ),
+          '[]'
+        ) AS menus
       FROM cafes c
-      LEFT JOIN bridge_facility_cafe bfc ON bfc.cafe_id = c.id
-      LEFT JOIN facilities f ON f.id = bfc.facility_id
       WHERE c.id = $1
       GROUP BY c.id`,
-      [cafeId],
+      [id],
     );
 
     if (!cafe.rows.length) {
@@ -44,12 +93,3 @@ export async function GET(
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-
-// export async function GET(
-//   _req: NextRequest,
-//   { params }: { params: Promise<{ id: string }> },
-// ) {
-//   const id = await params;
-//   const cafeId = decodeId(id.id);
-//   return Response.json({ ok: true, id: await params, cafeId });
-// }
