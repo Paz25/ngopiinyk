@@ -34,7 +34,9 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-        <SearchBar position="absolute left-1/2 top-full  -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute left-1/2 top-full z-[100] w-full -translate-x-1/2 -translate-y-1/2">
+          <SearchBar position="mx-auto" />
+        </div>
       </div>
       <div className="flex flex-col">
         <h2 className="text-lg md:text-xl font-semibold mb-5">
