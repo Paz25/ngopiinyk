@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import CafeDetailClient from "@/components/cafe/CafeDetailClient";
+import CafeDetailClient from "@/app/cafes/[id]/CafeDetailClient";
 import db from "@/lib/db";
 
 async function getCafe(id: string) {
