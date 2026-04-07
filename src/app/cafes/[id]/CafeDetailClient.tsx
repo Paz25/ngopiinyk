@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Heart,
   Star,
@@ -12,8 +13,8 @@ import {
 import { FacilityIconMap } from "@/models/IconMap";
 import { CafeDetailModel } from "@/models/CafeModel";
 import NotFound from "@/app/not-found";
-import CafeMap from "./CafeMap";
-import CafeImageGrid from "./CafeImageGrid";
+import CafeMap from "@/components/cafe/CafeMap";
+import CafeImageGrid from "@/components/cafe/CafeImageGrid";
 
 const CATEGORY_COLORS = ["#84aa04", "#7F77DD", "#D85A30", "#378ADD"];
 
@@ -26,6 +27,7 @@ function EmptyState({ children }: { children: React.ReactNode }) {
 }
 
 export default function CafeDetailClient({ id }: { id: string }) {
+  const router = useRouter();
   const [cafe, setCafe] = useState<CafeDetailModel | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,12 +37,18 @@ export default function CafeDetailClient({ id }: { id: string }) {
     const fetchCafe = async () => {
       try {
         const res = await fetch(`/api/cafes/${id}`);
+        if (res.status === 404) {
+          router.replace("/not-found");
+          return;
+        }
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
+
         setCafe(data);
         window.scrollTo({ top: 0, behavior: "instant" });
       } catch (error) {
         console.error("[CafeDetailPage] Failed to fetch cafe:", error);
+        router.replace("/explore");
       } finally {
         setLoading(false);
       }

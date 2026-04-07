@@ -1,12 +1,19 @@
 import { NextRequest } from "next/server";
 import db from "@/lib/db";
 
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
+
+    if (!UUID_REGEX.test(id)) {
+      return Response.json({ error: "Cafe not found" }, { status: 404 });
+    }
 
     const cafe = await db.query(
       `SELECT
