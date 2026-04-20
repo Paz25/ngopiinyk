@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
 import PrimaryButtonOutline from "@/components/buttons/PrimaryButtonOutline";
@@ -9,13 +10,41 @@ import FormField from "@/components/form/FormField";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 
 export default function LoginClient() {
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: implement auth
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message ?? "Email atau kata sandi salah");
+        return;
+      }
+      localStorage.setItem("accessToken", data.data.tokens.accessToken);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+
+      window.dispatchEvent(new Event("auth-change"));
+
+      router.push("/");
+    } catch {
+      setError("Terjadi kesalahan. Coba lagi nanti.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,7 +53,6 @@ export default function LoginClient() {
         <IllustrationPanel />
       </div>
       <div className="flex flex-col w-full lg:w-1/2 items-center justify-center px-8 sm:px-16 py-12">
-        {/* ── Kolom kanan: form login ───────────────────────────────────────── */}
         <div className="w-full max-w-lg flex flex-col gap-8">
           <div className="flex flex-col gap-2">
             <h1 className="text-2xl font-semibold text-white text-center">
@@ -51,6 +79,13 @@ export default function LoginClient() {
             <div className="flex-1 border-t border-white/10" />
           </div>
 
+          {/* Error message */}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <FormField
@@ -64,7 +99,6 @@ export default function LoginClient() {
               autoComplete="email"
             />
 
-            {/* Password */}
             <FormField
               id="password"
               label="Kata sandi"
@@ -77,7 +111,9 @@ export default function LoginClient() {
               labelLink={{ text: "Lupa kata sandi?", href: "/forgot-password" }}
             />
 
-            <PrimaryButton className="mt-2"> Masuk </PrimaryButton>
+            <PrimaryButton className="mt-2">
+              {loading ? "Memproses..." : "Masuk"}
+            </PrimaryButton>
           </form>
 
           {/* Register link */}
