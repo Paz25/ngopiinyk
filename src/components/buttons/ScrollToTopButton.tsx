@@ -51,7 +51,7 @@ export default function ScrollToTopButton() {
         aria-label="Kembali ke atas"
         className={[
           "scroll-to-top",
-          "fixed bottom-6 right-6 z-50",
+          "fixed bottom-6 right-6 z-30",
           "flex items-center justify-center p-4 rounded-full cursor-pointer",
           "border-2 border-[var(--color-primary)] text-[var(--color-primary)] bg-[var(--color-background)]",
           "shadow-lg",

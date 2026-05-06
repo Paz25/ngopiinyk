@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
@@ -23,6 +23,7 @@ import PrimaryButtonOutline from "@/components/buttons/PrimaryButtonOutline";
 
 import { CafeCardModel } from "@/models/CafeModel";
 import { UserModel } from "@/models/UserModel";
+import { useAuth } from "@/lib/context/AuthContext";
 
 type Tab = "saved" | "liked" | "posts" | "settings";
 
@@ -42,19 +43,6 @@ type UserPost = {
   comment: string;
   created_at: string;
   image: string | null;
-};
-
-// ─── Mock data (ganti dengan fetch asli) ─────────────────────────────────────
-
-const MOCK_USER: UserModel = {
-  id: "abc-123",
-  name: "I Putu Anjes Vernanda",
-  email: "lilscube@gmail.com",
-  profile_picture_path: null,
-  is_active: true,
-  email_verified_at: "2024-01-15T10:00:00Z",
-  created_at: "2024-01-10T08:00:00Z",
-  role: "customer",
 };
 
 const MOCK_SAVED: SavedCafe[] = [
@@ -109,8 +97,6 @@ const MOCK_POSTS: UserPost[] = [
   },
 ];
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("id-ID", {
     day: "numeric",
@@ -119,20 +105,27 @@ function formatDate(iso: string) {
   });
 }
 
-function getInitials(name: string) {
+function getInitials(name: string | undefined) {
   return name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
+    ? name
+        .split(" ")
+        .slice(0, 2)
+        .map((w) => w[0])
+        .join("")
+        .toUpperCase()
+    : "";
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default function ProfileClient() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("saved");
-  const user = MOCK_USER;
+
+  useEffect(() => {
+    if (!loading && !user) router.push("/login");
+  }, [user, loading]);
+
+  if (!user) return null;
 
   const tabs: {
     key: Tab;
@@ -168,16 +161,16 @@ export default function ProfileClient() {
         {/* Avatar */}
         <div className="relative shrink-0">
           <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden bg-white/10 flex items-center justify-center">
-            {user.profile_picture_path ? (
+            {user?.profile_picture_path ? (
               <Image
-                src={user.profile_picture_path}
-                alt={user.name}
+                src={user?.profile_picture_path}
+                alt={user?.name}
                 fill
                 className="object-cover object-center"
               />
             ) : (
               <span className="text-2xl font-semibold text-[var(--color-primary)]">
-                {getInitials(user.name)}
+                {getInitials(user?.name)}
               </span>
             )}
           </div>
@@ -192,8 +185,8 @@ export default function ProfileClient() {
         {/* Info */}
         <div className="flex flex-col gap-1.5 flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold text-white">{user.name}</h1>
-            {user.email_verified_at && (
+            <h1 className="text-xl font-semibold text-white">{user?.name}</h1>
+            {user?.email_verified_at && (
               <span className="flex items-center gap-1 text-xs text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-2 py-0.5 rounded-full">
                 <ShieldCheck size={11} />
                 Terverifikasi
@@ -203,7 +196,7 @@ export default function ProfileClient() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span className="flex items-center gap-1.5 text-sm text-white/70">
               <Mail size={16} className="shrink-0" />
-              {user.email}
+              {user?.email}
             </span>
           </div>
         </div>
@@ -257,7 +250,7 @@ export default function ProfileClient() {
           />
         )}
         {activeTab === "posts" && <PostsList posts={MOCK_POSTS} />}
-        {activeTab === "settings" && <SettingsPanel user={user} />}
+        {activeTab === "settings" && <SettingsPanel user={user || undefined} />}
       </div>
     </main>
   );
@@ -364,9 +357,9 @@ function PostsList({ posts }: { posts: UserPost[] }) {
 
 // ─── Settings Panel ───────────────────────────────────────────────────────────
 
-function SettingsPanel({ user }: { user: UserModel }) {
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
+function SettingsPanel({ user }: { user: UserModel | undefined }) {
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -412,7 +405,7 @@ function SettingsPanel({ user }: { user: UserModel }) {
               required
               autoComplete="email"
             />
-            {!user.email_verified_at && (
+            {!user?.email_verified_at && (
               <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-yellow-400/10 border border-yellow-400/20">
                 <Bell size={14} className="text-yellow-400 shrink-0" />
                 <p className="text-xs text-yellow-400">
