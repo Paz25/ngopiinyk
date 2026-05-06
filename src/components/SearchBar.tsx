@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import { MapPin, Navigation, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type SearchBarProps = {
   position?: string;
-}
+};
 
 type LocationSuggestion = {
   id: string;
@@ -15,17 +15,18 @@ type LocationSuggestion = {
   province: string;
   fullAddress: string;
   type: "popular" | "api";
-}
+};
 
 export default function SearchBar({ position }: SearchBarProps) {
-  const [location, setLocation] = useState("")
+  const [location, setLocation] = useState("");
   const [operationalHours, setOperationalHours] = useState("");
   const [category, setCategory] = useState("");
 
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [items, setItems] = useState<LocationSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<LocationSuggestion | null>(null);
+  const [selectedLocation, setSelectedLocation] =
+    useState<LocationSuggestion | null>(null);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -40,7 +41,7 @@ export default function SearchBar({ position }: SearchBarProps) {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [])
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -85,13 +86,13 @@ export default function SearchBar({ position }: SearchBarProps) {
 
   const handleSelectLocation = (item: LocationSuggestion) => {
     setLocation(item.name);
-    setSelectedLocation(item)
+    setSelectedLocation(item);
     setIsLocationOpen(false);
   };
 
   return (
     <div className={["w-full max-w-4xl", position ?? ""].join(" ")}>
-      <div ref={wrapperRef} className="relative z-[100]">
+      <div ref={wrapperRef} className="relative z-10">
         <div className="flex items-stretch rounded-full bg-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.35)] ring-1 ring-white/15 backdrop-blur">
           <div className="flex md:hidden flex-1 items-center px-5 py-3">
             <span className="text-sm text-white/45">

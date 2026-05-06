@@ -1,20 +1,16 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import PrimaryButtonOutline from "./buttons/PrimaryButtonOutline";
 import { koulen } from "@/utils/fonts";
-import { Menu, User, LogOut, UserCircle } from "lucide-react";
+import { Menu, LogOut, UserCircle } from "lucide-react";
+import { useAuth } from "@/lib/context/AuthContext";
 
 export type Menu = {
   name?: string;
   url?: string;
-};
-
-type UserInfo = {
-  name: string;
-  profilePicture?: string;
 };
 
 function getInitials(name: string) {
@@ -28,40 +24,19 @@ function getInitials(name: string) {
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const { user, loading, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const isAuthPage = ["/forgot-password"].includes(pathname);
 
   const menu: Menu[] = [
     { name: "Eksplor", url: "/explore" },
     { name: "Peta", url: "/maps" },
     { name: "FAQs", url: "/faqs" },
   ];
-
-  useEffect(() => {
-    const loadUser = () => {
-      const accessToken = localStorage.getItem("accessToken");
-      if (accessToken) {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          try {
-            setUser(JSON.parse(storedUser));
-            return;
-          } catch {
-            setUser(null);
-            return;
-          }
-        }
-      }
-      setUser(null);
-    };
-    loadUser();
-
-    window.addEventListener("auth-change", loadUser);
-    return () => window.removeEventListener("auth-change", loadUser);
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -88,47 +63,51 @@ export default function Navbar() {
         setDropdownOpen(false);
       }
     };
-    const id = setTimeout(() => {
-      document.addEventListener("click", handleClickOutside);
-    }, 0);
-
+    const id = setTimeout(
+      () => document.addEventListener("click", handleClickOutside),
+      0,
+    );
     return () => {
       clearTimeout(id);
       document.removeEventListener("click", handleClickOutside);
     };
   }, [dropdownOpen]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-    setUser(null);
-    setDropdownOpen(false);
-    window.dispatchEvent(new Event("auth-change"));
-    router.push("/login");
-  };
+  if (isAuthPage) return null;
 
-  const userBadge = (
-    <div ref={dropdownRef} onMouseDown={(e) => e.stopPropagation()}>
+  const UserBadge = ({ inSidebar = false }: { inSidebar?: boolean }) => (
+    <div
+      ref={dropdownRef}
+      className="relative"
+      onMouseDown={(e) => e.stopPropagation()}
+    >
       <button
         onClick={() => setDropdownOpen((prev) => !prev)}
-        className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+        className="flex items-center gap-2 max-w-[200px] cursor-pointer hover:opacity-80 transition-opacity"
       >
-        {user?.profilePicture ? (
+        {user?.profile_picture_path ? (
           <img
-            src={user.profilePicture}
+            src={user.profile_picture_path}
             alt={user.name}
-            className="w-8 h-8 rounded-full object-cover"
+            className="w-[45px] aspect-square rounded-full object-cover border-2 border-[var(--color-primary)]"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-white/10 border-2 border-[var(--color-primary)] text-[var(--color-primary)] flex items-center justify-center text-sm font-medium">
+          <div className="w-[45px] aspect-square rounded-full bg-white/10 border-2 border-[var(--color-primary)] text-[var(--color-primary)] flex items-center justify-center text-sm font-medium shrink-0">
             {getInitials(user?.name ?? "")}
           </div>
         )}
-        <span className="text-sm font-medium">{user?.name}</span>
+        <span title={user?.name} className="text-sm font-medium truncate">
+          {user?.name}
+        </span>
       </button>
 
       {dropdownOpen && (
-        <div className="absolute right-10 mt-2 w-48 rounded-lg bg-[var(--color-background)] border border-white/10 shadow-lg py-1 z-50">
+        <div
+          className={[
+            "absolute w-48 rounded-xl bg-[var(--color-background)] border border-white/10 shadow-xl py-1 z-50",
+            inSidebar ? "right-0 bottom-full mb-2" : "right-0 mt-2",
+          ].join(" ")}
+        >
           <button
             onClick={() => {
               setDropdownOpen(false);
@@ -137,12 +116,15 @@ export default function Navbar() {
             className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-white/5 transition-colors cursor-pointer"
           >
             <UserCircle size={16} />
-            Profil
+            Profil saya
           </button>
           <div className="border-t border-white/10" />
           <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
+            onClick={() => {
+              setDropdownOpen(false);
+              logout();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-400/5 transition-colors cursor-pointer"
           >
             <LogOut size={16} />
             Keluar
@@ -152,25 +134,40 @@ export default function Navbar() {
     </div>
   );
 
+  const AuthSkeleton = () => (
+    <div className="flex items-center gap-2 w-[200px] cursor-pointer hover:opacity-80 transition-opacity">
+      <div className="w-[45px] aspect-square rounded-full bg-white/10 shrink-0" />
+      <div className="h-6 w-full rounded-md bg-white/10 animate-pulse" />
+    </div>
+  );
+
   const AuthButtons = ({ vertical = false }: { vertical?: boolean }) => (
     <div className={`flex ${vertical ? "flex-col" : ""} gap-2`}>
-      <PrimaryButtonOutline onclick={() => router.push("/login")}>
+      <PrimaryButtonOutline
+        className="h-11"
+        onclick={() => router.push("/login")}
+      >
         Masuk
       </PrimaryButtonOutline>
-      <PrimaryButton onclick={() => router.push("/register")}>
+      <PrimaryButton className="h-11" onclick={() => router.push("/register")}>
         Daftar
       </PrimaryButton>
     </div>
   );
 
+  const NavRight = ({ vertical = false }: { vertical?: boolean }) => {
+    if (loading) return <AuthSkeleton />;
+    if (user) return <UserBadge inSidebar={vertical} />;
+    return <AuthButtons vertical={vertical} />;
+  };
+
   return (
     <>
-      <nav className="w-full flex justify-between px-6 md:px-12 py-3 sm:py-5 sticky top-0 z-50 bg-[var(--color-background)] shadow-sm">
+      <nav className="w-full flex justify-between px-6 md:px-12 py-3 sm:py-4 sticky top-0 z-50 bg-[var(--color-background)] shadow-sm">
         <div className="flex gap-10 items-center">
           <a href="/">
             <span className={`${koulen.className} text-2xl`}>Ngopiin.yk</span>
           </a>
-
           <div className="hidden md:flex gap-8">
             {menu.map((item) => (
               <a
@@ -184,21 +181,18 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop: Auth buttons or user badge */}
         <div className="hidden md:flex items-center">
-          {user ? userBadge : <AuthButtons />}
+          <NavRight />
         </div>
 
-        {/* Hamburger Button Mobile */}
         <button
-          className="md:hidden flex flex-col justify-center gap-[5px] w-8 h-8 cursor-pointer"
+          className="md:hidden flex items-center justify-center w-8 h-8 cursor-pointer"
           onClick={() => setSidebarOpen(true)}
         >
           <Menu />
         </button>
       </nav>
 
-      {/* Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
@@ -206,7 +200,6 @@ export default function Navbar() {
         />
       )}
 
-      {/* Sidebar */}
       <div
         className={[
           "fixed top-0 right-0 z-50 h-full w-60 bg-[var(--color-background)] shadow-xl",
@@ -215,16 +208,15 @@ export default function Navbar() {
           sidebarOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
       >
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end">
           <button
             onClick={() => setSidebarOpen(false)}
-            className="text-xl leading-none cursor-pointer"
+            className="text-xl cursor-pointer"
             aria-label="Tutup menu"
           >
             ✕
           </button>
         </div>
-
         <div className="flex flex-col gap-5">
           {menu.map((item) => (
             <a
@@ -237,10 +229,8 @@ export default function Navbar() {
             </a>
           ))}
         </div>
-
-        {/* Sidebar: Auth buttons or user badge */}
         <div className="flex flex-col gap-3 mt-auto">
-          {user ? userBadge : <AuthButtons vertical />}
+          <NavRight vertical />
         </div>
       </div>
     </>

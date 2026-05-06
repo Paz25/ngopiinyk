@@ -8,9 +8,8 @@ import BestSection from "@/components/home/BestSection";
 import MasonrySection from "@/components/home/MasonrySection";
 
 export const metadata: Metadata = {
-  title:
-    "Ngopiinyk | Jelajahi kafe di Jogja sesuai kebutuhan dan ceritamu hari ini.",
-  description: "Temukan Kafe yang Tepat untuk Setiap Momen",
+  title: "Ngopiinyk | Temukan Kafe yang Tepat untuk Setiap Momen",
+  description: "Jelajahi kafe di Jogja sesuai kebutuhan dan ceritamu hari ini.",
 };
 
 export default function HomePage() {
@@ -36,7 +35,7 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-        <div className="absolute left-1/2 top-full z-[100] w-full -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-full z-10 w-full -translate-x-1/2 -translate-y-1/2">
           <SearchBar position="mx-auto" />
         </div>
       </div>

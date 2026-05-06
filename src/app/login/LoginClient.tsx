@@ -5,12 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
+import { useAuth } from "@/lib/context/AuthContext";
 import PrimaryButtonOutline from "@/components/buttons/PrimaryButtonOutline";
 import FormField from "@/components/form/FormField";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 
 export default function LoginClient() {
   const router = useRouter();
+  const { refetch } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,18 +29,14 @@ export default function LoginClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await res.json();
 
       if (!res.ok) {
         setError(data.message ?? "Email atau kata sandi salah");
         return;
       }
-      localStorage.setItem("accessToken", data.data.tokens.accessToken);
-      localStorage.setItem("user", JSON.stringify(data.data.user));
 
-      window.dispatchEvent(new Event("auth-change"));
-
+      await refetch();
       router.push("/");
     } catch {
       setError("Terjadi kesalahan. Coba lagi nanti.");

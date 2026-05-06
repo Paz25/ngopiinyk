@@ -6,5 +6,4 @@ export type UserModel = {
   is_active: boolean;
   email_verified_at: string | null;
   created_at: string;
-  role: "customer" | "admin";
 };
