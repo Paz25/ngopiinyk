@@ -1,6 +1,5 @@
 import { poppins, koulen } from "@/utils/fonts";
 import { AuthProvider } from "@/lib/context/AuthContext";
-import "@/app/globals.css";
 
 export default function RootLayout({
   children,

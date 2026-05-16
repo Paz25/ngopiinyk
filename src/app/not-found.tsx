@@ -1,26 +1,23 @@
+import { Metadata } from "next";
 import { koulen } from "@/utils/fonts";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title: "Ngopiinyk",
+  description:
+    "Halaman yang kamu cari tidak ditemukan atau sedang dalam perbaikan.",
+};
+
 export default function NotFound() {
   return (
-    <main className="flex flex-col min-h-[90lvh] w-full items-center justify-center px-6 py-16 gap-10 bg-[var(--color-background)]">
+    <main className="flex flex-col min-h-lvh w-full items-center justify-center px-6 py-16 gap-10 bg-[var(--color-background)]">
       <h1 className={`${koulen.className} text-7xl`}>404</h1>
-      {/* ── Ilustrasi kopi tumpah ─────────────────────────────────────────── */}
-      {/* <div className="w-full max-w-sm">
-        <SpilledCoffeeIllustration />
-      </div> */}
-
-      {/* ── Teks ─────────────────────────────────────────────────────────── */}
       <div className="flex flex-col items-center gap-3 text-center max-w-md">
-        {/* <h1 className="text-2xl font-semibold text-white">
-          Aduh, kopinya tumpah!
-        </h1> */}
         <p className="text-md text-white/70 leading-relaxed">
           Halaman yang kamu cari tidak ditemukan atau sedang dalam perbaikan.
         </p>
       </div>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3">
         <Link
           href="/"

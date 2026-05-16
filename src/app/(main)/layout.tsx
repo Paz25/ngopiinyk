@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { poppins, koulen } from "@/utils/fonts";
 import { AuthProvider } from "@/lib/context/AuthContext";
-import "@/app/globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({
   children,
@@ -8,10 +10,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} ${koulen.variable} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
-      </body>
-    </html>
+    <>
+      <Navbar />
+      {children}
+      <Footer />
+    </>
   );
 }
